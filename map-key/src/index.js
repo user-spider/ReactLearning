@@ -78,5 +78,91 @@ const todoItems = todos.map((todo, index) =>
 // ------------------------------------------------------------
 // ### 用 key 提取组件
 //    元素的 key 只有放在就近的数组上下文中才有意义。
+//    比方说，如果你提取出一个 ListItem 组件，
+//    你应该把 key 保留在数组中的这个 <ListItem /> 元素上，而不是放在 ListItem 组件中的 <li> 元素上。
+/*
+function ListItem(props) {
+    return <li>{props.value}</li>;
+}
 
+function NumberList(props) {
+    const numbers = props.numbers;
+    const listItems = numbers.map((number) =>
+        // Correct! Key should be specified inside the array.
+        <ListItem key={number.toString()} value={number} />
+    );
+
+    return (
+        <ul>
+            {listItems}
+        </ul>
+    );
+}
+
+const numbers = [1, 2, 3, 4, 5];
+ReactDOM.render(
+    <NumberList numbers={numbers} />,
+    document.getElementById('root')
+);*/
+//    一个好的经验法则是：在 map() 方法中的元素需要设置 key 属性。
+// ------------------------------------------------------------
+
+// ------------------------------------------------------------
+// ### key 只是在兄弟节点之间必须唯一
+//    数组元素中使用的 key 在其兄弟节点之间应该是独一无二的。
+//    它们不需要是全局唯一的。
+//    当我们生成两个不同的数组时，我们可以使用相同的 key 值：
+/*
+function Blog(props) {
+    const sidebar = (
+        <ul>
+            {props.posts.map((post) =>
+                    <li key={post.id}>
+                        {post.title}
+                    </li>
+                )
+            }
+        </ul>
+    );
+     const content = props.posts.map((post) =>
+        <div key={post.id}>
+            <h3>{post.title}</h3>
+            <p>{post.content}</p>
+        </div>
+     );
+     return (
+         <div>
+             {sidebar}
+             <hr/>
+             {content}
+         </div>
+     )
+}
+
+const posts = [
+    {id: 1, title: 'Hello World', content: 'Welcome to learning React!'},
+    {id: 2, title: 'Installation', content: 'You can install React from npm.'}
+];
+ReactDOM.render(
+    <Blog posts={posts} />,
+    document.getElementById('root')
+);*/
+// ------------------------------------------------------------
+
+// ------------------------------------------------------------
+// ### 在 JSX 中嵌入 map()
+//    JSX 允许在大括号中嵌入任何表达式，所以我们可以内联 map() 返回的结果：
+/*
+function  NumberList(props) {
+    const numbers = props.numbers;
+    return (
+        <ul>
+            {numbers.map((numbers) =>
+                <ListItem key={number.toString()} value={number} />
+            )}
+        </ul>
+    );
+}*/
+//    这么做有时可以使你的代码更清晰，但有时这种风格也会被滥用。
+//    如果一个 map() 嵌套了太多层级，那可能就是你提取组件的一个好时机。
 
