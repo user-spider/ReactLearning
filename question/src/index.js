@@ -11,6 +11,8 @@ const element = (
         <h2>5. 数据流</h2>
         <h2>6. state 的更新是异步的，所以 setState 接受函数而不是一个对象</h2>
         <h2>7. 有状态组件和无状态组件</h2>
+        <h2>8. class 函数组件二者在返回中引用函数的区别</h2>
+        <h2>9. 表单相关 formik </h2>
     </div>
 )
 ReactDOM.render(
