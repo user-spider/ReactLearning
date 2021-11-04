@@ -133,3 +133,137 @@ function tryConvert(temperature, convert) {
 // -------------------------------------------------------------------------
 // ### 状态提升
 //    到目前为止, 两个 TemperatureInput 组件均在各自内部的 state 中相互独立地保存着各自的数据。
+//    在 React 中，将多个组件中需要共享的 state 向上移动到它们的最近共同父组件中，便可实现共享 state。
+//    这就是所谓的“状态提升”。
+//    接下来，我们将 TemperatureInput 组件中的 state 移动至 Calculator 组件中去。
+//    由于两个 TemperatureInput 组件的 props 均来自共同的父组件 Calculator，因此两个输入框中的内容将始终保持一致。
+//    当我们想要响应数据改变时，我们需要调用 Calculator 组件提供的 this.props.onTemperatureChange()，而不再使用 this.setState()。
+/*
+class TemperatureInput extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    handleChange(e) {
+        this.props.onTemperatureChange(e.target.value);
+    }
+
+    render() {
+        const temperature = this.props.temperature;
+        const scale = this.props.scale;
+        return (
+            <fieldset>
+                <legend>Enter temperature in {scaleNames[scale]}:</legend>
+                <input value={temperature} onChange={this.handleChange}/>
+            </fieldset>
+        );
+    }
+}*/
+//     完整代码
+/*
+const scaleNames = {
+    c: 'Celsius',
+    f: 'Fahrenheit'
+};
+
+function toCelsius(fahrenheit) {
+    return (fahrenheit - 32) * 5 / 9;
+}
+
+function toFahrenheit(celsius) {
+    return (celsius * 9 / 5) + 32;
+}
+
+function tryConvert(temperature, convert) {
+    const input = parseFloat(temperature);
+    if(Number.isNaN(input)) {
+        return '';
+    }
+    const output = convert(input);
+    const rounded = Math.round(output * 1000) / 1000;
+    return rounded.toString();
+}
+
+function BoilingVerdict(props) {
+    if (props.celsius >= 100) {
+        return <p>The water would boil.</p>;
+    }
+    return <p>The water would not boil.</p>;
+}
+
+class TemperatureInput extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    handleChange(e) {
+        this.props.onTemperatureChange(e.target.value);
+    }
+
+    render() {
+        const temperature = this.props.temperature;
+        const scale = this.props.scale;
+        return (
+            <fieldset>
+                <legend>Enter temperature in {scaleNames[scale]}:</legend>
+                <input value={temperature} onChange={this.handleChange} />
+            </fieldset>
+        );
+    }
+}
+
+class Calculator extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {temperature: '', scale: 'c'};
+
+        this.handleCelsiusChange = this.handleCelsiusChange.bind(this);
+        this.handleFahrenheitChange = this.handleFahrenheitChange.bind(this);
+    }
+
+    handleCelsiusChange(temperature) {
+        this.setState({scale: 'c', temperature});
+    }
+
+    handleFahrenheitChange(temperature) {
+        this.setState({scale: 'f', temperature});
+    }
+
+    render() {
+        const scale = this.state.scale;
+        const temperature = this.state.temperature;
+        const celsius = scale === 'f' ? tryConvert(temperature, toCelsius) : temperature;
+        const fahrenheit = scale === 'c' ? tryConvert(temperature, toFahrenheit) : temperature;
+
+        return (
+            <div>
+                <TemperatureInput
+                    scale="c"
+                    temperature={celsius}
+                    onTemperatureChange={this.handleCelsiusChange}
+                />
+                <TemperatureInput
+                    scale="f"
+                    temperature={fahrenheit}
+                    onTemperatureChange={this.handleFahrenheitChange}
+                />
+                <BoilingVerdict
+                    celsius={parseFloat(celsius)}
+                />
+            </div>
+        );
+    }
+}
+
+ReactDOM.render(
+    <Calculator />,
+    document.getElementById('root')
+)*/
+// -------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------
+// ### 学习小结
+//    在 React 应用中，任何可变数据应当只有一个相对应的唯一“数据源”。
+//    你应当依靠自上而下的数据流，而不是尝试在不同组件间同步 state。
